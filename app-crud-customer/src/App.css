@@ -1,10 +1,12 @@
 .App {
-  text-align: center;
   background-color: #d8d7d7;
 }
 
 .App-Header {
   display: flex;
+  padding-left: 0px!important;
+  padding-top: 15px!important;
+  padding-bottom: 15px!important;
 }
 
 .App-Head {
@@ -21,6 +23,19 @@
 }
 
 .App-TableList, .App-FormNewCustom {
+  font-size: 0.7rem!important;
   background-color: white;
-  align-items: flex-start
+  align-items: flex-start;
+  padding: 25px!important;
+  /* padding-right: 30px!important;
+  padding-bottom: 30px!important; */
+  margin: 0!important;
+  border-collapse: unset!important;
+}
+
+.listCustomer, td {
+  vertical-align: unset!important;
+}
+.formControl {
+  font-size: 0.6rem!important;
 }

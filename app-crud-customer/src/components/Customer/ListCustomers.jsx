@@ -9,13 +9,13 @@ const ListCustomers = ({...props }) => {
   if (!customer || customer.length === 0) return <p>Pas de Clients dans la base</p>;
 
   return (
-    <Container className="App-View container-fluid px-0">
+    <Container className="App-View container-fluid">
       <h5 className='App-Head'>TOUT LES CLIENTS</h5>
       <div className="App-ShowFormCustomer">
         <Button type="submit" variant="secondary" size="sm" onClick={() => setShowForm(prevCheck => !prevCheck)}><i className="fas fa-plus-circle"></i></Button>
       </div>
       { showForm ? (
-        <div className="App-Container">
+        <div className="App-">
           <CustomerNew/>
         </div> ) : null
       }
@@ -44,9 +44,9 @@ const ListCustomers = ({...props }) => {
                 <td>{repo.company}</td>
                 <td>{repo.companyID}</td>
                 <td>
-                  <Button type="submit" variant="light" size="sm" ><i className="far fa-eye"></i></Button>
-                  <Button type="submit" variant="light" size="sm" ><i className="fas fa-pencil-alt"></i></Button>
-                  <Button type="submit" variant="light" size="sm" ><i className="far fa-trash-alt"></i></Button>
+                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="far fa-eye"></i></Button>
+                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="fas fa-pencil-alt"></i></Button>
+                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="far fa-trash-alt"></i></Button>
                 </td>
               </tr>
             </tbody>

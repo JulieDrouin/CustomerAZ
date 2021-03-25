@@ -1,7 +1,8 @@
 import React from "react";
 import { Container } from "react-bootstrap";
 
-const Header = ({ titre }) => {
+const Header = () => {
+  const titre= "CLIENTS";
   return (
     <Container className="App-Header">
       <header >
