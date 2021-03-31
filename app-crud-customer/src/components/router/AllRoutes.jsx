@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Switch, Route } from "react-router-dom";
 import ListCustomers from '../Customer/ListCustomers';
-import CustomerNew from '../Customer/CustomerNew';
-
-const apiUrl = `https://app.tacbox.fr/api/customers`;
+import CustomerInfo from '../Customer/CustomerInfo';
 
 const AllRoutes = () => {
-  const [appState, setAppState] = useState({ customer: ''});
-
-  useEffect(() => {
-    fetch(apiUrl)
-    .then((res) => res.json())
-    .then((jsonResponse) => {
-      setAppState({ customer: jsonResponse["hydra:member"] });
-    });
-  }, [setAppState]);
 
   return (
     <Switch>
-      <Route exact path="/" render={() => <ListCustomers customer={appState.customer} /> } />
-      <Route exact path="/" component={CustomerNew} />
+      <Route exact path="/customers" component={ListCustomers} />
+      <Route exact path="/customer/info/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/edit/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/delete/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/contact/info/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/contact/edit/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/contact/delete/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/adress/info/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/adress/edit/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route exact path="/customer/adress/delete/:id" render={(props) => <CustomerInfo {...props}/>} />
+      <Route render={() => <h1>404: page not found</h1>} />
     </Switch>
   );
 };

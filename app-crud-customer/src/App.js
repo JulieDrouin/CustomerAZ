@@ -9,7 +9,7 @@ const App = () => {
     <BrowserRouter>
       <div className="App">
         <Header/>
-        <div className="container-fluid px-0">
+        <div className="container px-0">
           <AllRoutes/>
         </div>
       </div>

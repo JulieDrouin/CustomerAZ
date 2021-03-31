@@ -1,12 +1,21 @@
 .App {
   background-color: #d8d7d7;
 }
+.linkA {
+  text-decoration: none!important;
+  color: black!important;
+}
 
 .App-Header {
   display: flex;
   padding-left: 0px!important;
   padding-top: 15px!important;
   padding-bottom: 15px!important;
+}
+.App-infoHeader {
+  padding-top: 20px;
+  height: 100vh;
+  background-color: white;
 }
 
 .App-Head {
@@ -23,12 +32,11 @@
 }
 
 .App-TableList, .App-FormNewCustom {
+  height: 100vh;
   font-size: 0.7rem!important;
   background-color: white;
   align-items: flex-start;
   padding: 25px!important;
-  /* padding-right: 30px!important;
-  padding-bottom: 30px!important; */
   margin: 0!important;
   border-collapse: unset!important;
 }
@@ -38,4 +46,16 @@
 }
 .formControl {
   font-size: 0.6rem!important;
+}
+
+.App-CustomerContact {
+  /* flex-direction: row;
+  flex-wrap: wrap;
+  flex-flow: row wrap;
+columns: 2 auto; */
+display: flex;
+   /* align-items: center;
+   justify-content: center; */
+   flex-flow: row wrap;
+   align-content: stretch;
 }

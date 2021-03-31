@@ -1,47 +1,24 @@
-import React, { useState } from "react";
-import { Form, Button, Col } from "react-bootstrap";
+import React from "react";
+import { useLocation, useParams } from "react-router";
+import { Form, Col } from "react-bootstrap";
+import ButtonReturn from './../Common/ButtonReturn';
+import ButtonSubmit from './../Common/ButtonSubmit';
+import ButtonEditDelete from './../Common/ButtonEditDelete';
 
-const CustomerNew = () => {
-  const [newCustomer, setNewCustomers] = useState({
-      customerType: "/api/customer_types/1",
-      company: "",
-      companyID: "",
-      tel: "",
-      email: "",
-      firstName: "",
-      lastName: "",
-      hasAccount: true,
-      etat: false,
-      billingType : "/api/billing_types/1"
-   });
+const CustomerForm = ({ onChange, customer, returnLink, titre }) => {
+  let { id } = useParams();
+  const location = useLocation();
+  const custom = customer;
+  const handleChangeFields = onChange;
+  const loc = location.state === undefined ? undefined : location.state;
+  const locationStateCust = loc ? loc.cust || loc.customer : undefined;
+  const locationCust = custom === undefined ? locationStateCust : custom;
 
-  function handleChangeFields(event) {
-    setNewCustomers({
-      ...newCustomer,
-      [event.target.name]: event.target.value,
-    });
-  }
-  console.log(newCustomer)
-  const urlApi = "https://app.tacbox.fr/api/customers";
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...newCustomer
-      })
-    };
-    fetch(urlApi, requestOptions)
-      .then(response => response.json())
-      .then(jsonResponse => setNewCustomers({newCustomer : jsonResponse}));
-  };
-
-  const isInvalid =  !newCustomer.company || !newCustomer.companyID || !newCustomer.tel || !newCustomer.email || !newCustomer.firstName || !newCustomer.lastName ;
   return (
+    <>
+    { ( location.pathname === `/customers` || location.pathname === `/customer/info/${id}` || location.pathname === `/customer/edit/${id}`) &&
     <div className="App-FormNewCustom container-fluid">
-      <Form onSubmit={handleSubmit}>
+      <h5>{titre}</h5>
         <Form.Row xs={4} md={4}>
           <Form.Group as={Col} xs={6} md={2} controlId="customerType">
             <Form.Check
@@ -51,7 +28,8 @@ const CustomerNew = () => {
               id="formCustomerType1"
               value={"/api/customer_types/1"}
               onChange={handleChangeFields}
-              defaultChecked
+              defaultChecked={ locationCust.customerType = "/api/customer_types/1"}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
              />
           </Form.Group>
           <Form.Group as={Col} xs={6} md={2} controlId="customerType">
@@ -62,6 +40,8 @@ const CustomerNew = () => {
               id="formCustomerType2"
               value={"/api/customer_types/2"}
               onChange={handleChangeFields}
+              defaultChecked={ locationCust.customerType = "/api/customer_types/2"}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -73,8 +53,9 @@ const CustomerNew = () => {
               type="text"
               placeholder="Nom"
               name="firstName"
-              value={newCustomer.firstName || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.firstName || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -86,8 +67,9 @@ const CustomerNew = () => {
               type="text"
               placeholder="Prénom"
               name="lastName"
-              value={newCustomer.lastName || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.lastName || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -99,8 +81,9 @@ const CustomerNew = () => {
               type="text"
               placeholder="Email"
               name="email"
-              value={newCustomer.email || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.email || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -112,8 +95,9 @@ const CustomerNew = () => {
               type="text"
               placeholder="Téléphone"
               name="tel"
-              value={newCustomer.tel || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.tel || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -125,8 +109,9 @@ const CustomerNew = () => {
               type="text"
               placeholder="Nom de l'entreprise"
               name="company"
-              value={newCustomer.company || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.company || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
@@ -138,16 +123,23 @@ const CustomerNew = () => {
               type="text"
               placeholder="Numéro de siret"
               name="companyID"
-              value={newCustomer.companyID || ""}
               onChange={handleChangeFields}
+              defaultValue={locationCust.companyID || ""}
+              disabled={location.pathname === `/customer/info/${id}` ? true : false}
             />
           </Form.Group>
         </Form.Row>
-        <Form.Row md={4}>
-          <Button disabled={isInvalid} variant="info" type="submit">Submit</Button>
-        </Form.Row>
-      </Form>
+        { location.pathname === `/customer/info/${id}` &&
+        <div className="mt-20">
+          <ButtonEditDelete to={{ pathname:`/customer/edit/${id}`, state:{customer} }} props={customer.id} customer={customer} logo={"fas fa-pencil-alt"}/>
+          <ButtonEditDelete to={{ pathname: `/customer/delete/${id}`, state:{customer} }} props={customer.id} customer={customer} logo={"far fa-trash-alt"}/>
+        </div>
+        }
     </div>
+    }
+    { location.pathname === `/customer/edit/${id}` ? <ButtonSubmit/> : null }
+    { returnLink ? ( <ButtonReturn to={{ pathname: `/customers`}}/> ) : null }
+    </>
   );
 };
-export default CustomerNew;
+export default CustomerForm;

@@ -1,25 +1,86 @@
-import React, { useState } from "react";
-import { Table, Button, Container } from "react-bootstrap";
-import CustomerNew from "../Customer/CustomerNew";
+import React, { useState, useEffect } from "react";
+import { Table, Button, Container, Form } from "react-bootstrap";
+import CustomerForm from "./CustomerForm";
+import ButtonEditDelete from './../Common/ButtonEditDelete';
 
-const ListCustomers = ({...props }) => {
+const ListCustomers = () => {
+  const [newCustomer, setNewCustomers] = useState({
+    customerType: "/api/customer_types/1",
+    company: "",
+    companyID: "",
+    tel: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    hasAccount: true,
+    etat: false,
+    billingType : "/api/billing_types/1"
+  });
+  const [showForm, setShowForm] = useState(false);
 
-  const { customer } = props;
-  const [showForm, setShowForm] = useState(false)
-  if (!customer || customer.length === 0) return <p>Pas de Clients dans la base</p>;
+  // ---->  GET All Customers
+  const [appState, setAppState] = useState({ customer: ''});
+  useEffect(() => {
+    const apiUrlGetAllCustomers = `https://app.tacbox.fr/api/customers`;
+    fetch(apiUrlGetAllCustomers)
+    .then((res) => res.json())
+    .then((jsonResponse) => {
+      setAppState({ customer: jsonResponse["hydra:member"] });
+      });
+    },
+  [setAppState]);
+
+
+  // ---->  Change State fields Customer
+  function handleChangeFields(event) {
+    setNewCustomers({
+      ...newCustomer,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  // ---->  POST New Customer
+  const apiUrlPostCustomer = "https://app.tacbox.fr/api/customers";
+  function handleSubmit(event) {
+    event.preventDefault();
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...newCustomer
+      })
+    };
+    fetch(apiUrlPostCustomer, requestOptions)
+    .then(response => response.json())
+    .then(jsonResponse => setNewCustomers({newCustomer : jsonResponse}));
+  };
+
+  if (!appState.customer || appState.customer.length === 0)
+    return (
+      <div className="App-infoHeader container">
+        <h5>Aucuns clients trouvés</h5>
+      </div>
+  );
+
+  const isInvalid =  !newCustomer.company || !newCustomer.companyID || !newCustomer.tel || !newCustomer.email || !newCustomer.firstName || !newCustomer.lastName ;
 
   return (
-    <Container className="App-View container-fluid">
+    <Container className="App-View">
       <h5 className='App-Head'>TOUT LES CLIENTS</h5>
       <div className="App-ShowFormCustomer">
         <Button type="submit" variant="secondary" size="sm" onClick={() => setShowForm(prevCheck => !prevCheck)}><i className="fas fa-plus-circle"></i></Button>
       </div>
       { showForm ? (
         <div className="App-">
-          <CustomerNew/>
+          <Form onSubmit={handleSubmit}>
+            <CustomerForm onChange={handleChangeFields} customer={newCustomer} titre={"Ajouter un Client"}/>
+            <div className="mt-20">
+              <Button className="" disabled={isInvalid} variant="danger" type="submit">Submit</Button>
+            </div>
+          </Form>
         </div> ) : null
       }
-      <Table className="App-TableList " size="sm" responsive="sm">
+      <Table className="App-TableList table table-hover" size="sm" responsive="sm">
         <thead>
           <tr>
             <th>ID</th>
@@ -32,21 +93,21 @@ const ListCustomers = ({...props }) => {
             <th>Action</th>
           </tr>
         </thead>
-        {customer.map((repo) => {
+        {appState.customer.map((cust) => {
           return (
-            <tbody key={repo.id} className='listCustomer'>
+            <tbody key={cust.id} className='listCustomer'>
               <tr>
-                <td>{repo.id}</td>
-                <td>{repo.firstName}</td>
-                <td>{repo.lastName}</td>
-                <td>{repo.email}</td>
-                <td>{repo.tel}</td>
-                <td>{repo.company}</td>
-                <td>{repo.companyID}</td>
+                <td>{cust.id}</td>
+                <td>{cust.firstName}</td>
+                <td>{cust.lastName}</td>
+                <td>{cust.email}</td>
+                <td>{cust.tel}</td>
+                <td>{cust.company}</td>
+                <td>{cust.companyID}</td>
                 <td>
-                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="far fa-eye"></i></Button>
-                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="fas fa-pencil-alt"></i></Button>
-                  <Button type="submit" variant="outline-secondary" size="sm" className="m-1"><i className="far fa-trash-alt"></i></Button>
+                  <ButtonEditDelete to={{ pathname:`/customer/info/${cust.id}`, state:{cust} }} logo={"far fa-eye"}/>
+                  <ButtonEditDelete to={{ pathname:`/customer/edit/${cust.id}`, state:{cust} }} logo={"fas fa-pencil-alt"} onChange={handleChangeFields}/>
+                  <ButtonEditDelete to={{ pathname:`/customer/delete/${cust.id}`, state:{cust} }} logo={"far fa-trash-alt"} onChange={handleChangeFields}/>
                 </td>
               </tr>
             </tbody>
