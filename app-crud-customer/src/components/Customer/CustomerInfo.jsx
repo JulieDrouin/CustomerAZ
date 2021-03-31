@@ -92,7 +92,7 @@ const CustomerInfo = ({...props}) => {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        ...addressCurrentState
+        ...contactCurrentState
       })
     };
     fetch(apiUrlDeleteContact, requestOptions)
